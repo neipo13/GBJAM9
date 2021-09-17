@@ -14,14 +14,9 @@ namespace GBJAM9.Effects
         Dictionary<Palette, Matrix> colorPalettes = new Dictionary<Palette, Matrix>();
 
         EffectParameter colorMatrixParam;
-        public PaletteSwapPostProcessor(int executionOrder) : base(executionOrder, null)
+        public PaletteSwapPostProcessor(int executionOrder, Effect effect) : base(executionOrder, effect)
         {
             InitColorMatrix();
-        }
-
-        public override void OnAddedToScene(Scene scene)
-        {
-            Effect = scene.Content.Load<Effect>("effects/paletteSwap");
             colorMatrixParam = Effect.Parameters["_ColorMatrix"];
             colorMatrixParam.SetValue(_ColorMatrix);
         }

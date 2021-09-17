@@ -10,8 +10,14 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Content\bin\**" />
+    <Compile Remove="Content\obj\**" />
     <Compile Remove="nez\**" />
+    <EmbeddedResource Remove="Content\bin\**" />
+    <EmbeddedResource Remove="Content\obj\**" />
     <EmbeddedResource Remove="nez\**" />
+    <None Remove="Content\bin\**" />
+    <None Remove="Content\obj\**" />
     <None Remove="nez\**" />
   </ItemGroup>
   <ItemGroup>

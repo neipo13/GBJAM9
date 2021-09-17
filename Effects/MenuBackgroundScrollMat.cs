@@ -16,9 +16,8 @@ namespace GBJAM9.Effects
         Vector2 xy;
         Vector2 size;
 
-        public MenuBackgroundScrollMat(Scene scene, Vector2 size, float scrollSpeed = 0.5f)
+        public MenuBackgroundScrollMat(Effect effect, Vector2 size, float scrollSpeed = 0.5f) : base(effect)
         {
-            Effect = scene.Content.Load<Effect>("effects/background_scroll");
             time = Effect.Parameters["time"];
             speed = Effect.Parameters["speed"];
             speed.SetValue(scrollSpeed);
@@ -50,16 +49,12 @@ namespace GBJAM9.Effects
             return
                 Matrix.CreateTranslation(-origin.X, -origin.Y, 0f) *
                 Matrix.CreateTranslation(-xy.X, -xy.Y, 0f) *
-                Matrix.CreateRotationZ(0) *
-                Matrix.CreateScale(1f, 1f, 1f) *
                 Matrix.CreateTranslation(origin.X, origin.Y, 0f);
         }
         private Matrix GetUVTransform()
         {
             return
                 Matrix.CreateScale(size.X, size.Y, 1f) *
-                Matrix.CreateScale(1f, 1f, 1f) *
-                Matrix.CreateTranslation(0f, 0f, 0f) *
                 GetView() *
                 Matrix.CreateScale(1f / Core.GraphicsDevice.Viewport.Width, 1f / Core.GraphicsDevice.Viewport.Height, 1f);
         }

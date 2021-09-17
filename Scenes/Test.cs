@@ -7,6 +7,7 @@ using Nez.Textures;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace GBJAM9.Scenes
 {
@@ -19,7 +20,8 @@ namespace GBJAM9.Scenes
             base.Initialize();
             ClearColor = Color.CornflowerBlue;
             AddRenderer<DefaultRenderer>(new DefaultRenderer());
-            paletteSwapPostProcessor = AddPostProcessor(new PaletteSwapPostProcessor(999));
+            var effect = Content.Load<Effect>("effects/paletteswap");
+            paletteSwapPostProcessor = AddPostProcessor(new PaletteSwapPostProcessor(999, effect));
             paletteSwapPostProcessor.SetColors(Palette.GameGuy);
 
 
@@ -29,16 +31,28 @@ namespace GBJAM9.Scenes
         {
             base.OnStart();
 
+            var effect = Content.Load<Effect>("effects/background_scroll");
             var texture = Content.Load<Texture2D>("img/repeatingBgCircle");
-            var material = new MenuBackgroundScrollMat(this, new Vector2(texture.Width/4f, texture.Height/4f), -0.75f);
+            var material = new MenuBackgroundScrollMat(effect, new Vector2(texture.Width, texture.Height), -0.75f);
             var sprite = new Sprite(texture);
             var spriteRenderer = new SpriteRenderer(sprite);
             spriteRenderer.Material = material;
             var e = new Entity("testObj");
-            e.Position = new Vector2(16, 16);
-            e.Scale = new Vector2(10);
+            e.Position = new Vector2(NezGame.designWidth / 2f, NezGame.designHeight / 2f);
+            e.Scale = new Vector2(NezGame.designWidth/texture.Width, NezGame.designHeight/texture.Height);
             e.AddComponent(spriteRenderer);
             AddEntity(e);
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            if (Nez.Input.IsKeyPressed(Microsoft.Xna.Framework.Input.Keys.Space))
+            {
+                var pal = Nez.Random.NextInt(Enum.GetValues(typeof(Palette)).Length);
+                Data.Settings.Instance.currentPalette = (Palette)pal;
+                paletteSwapPostProcessor.SetColors(Data.Settings.Instance.currentPalette);
+            }
         }
     }
 }

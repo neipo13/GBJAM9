@@ -22,7 +22,7 @@ namespace GBJAM9
             base.Initialize();
             var policy = Scene.SceneResolutionPolicy.BestFit;
             Scene.SetDefaultDesignResolution(designWidth, designHeight, policy, 0, 0);
-            Scene = new Scenes.Test();
+            Scene = new Scenes.SplashScreenScene(Scenes.SplashType.GBJAM);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GBJAM9.Effects;
+using GBJAM9.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Nez;
@@ -23,6 +24,8 @@ namespace GBJAM9.Scenes
         SplashType type;
         bool tweenedIn = false;
         PaletteSwapPostProcessor paletteSwapPostProcessor;
+        InputHandler input;
+        
 
         public SplashScreenScene(SplashType type)
         {
@@ -37,6 +40,7 @@ namespace GBJAM9.Scenes
             var effect = Content.Load<Effect>("effects/paletteswap");
             paletteSwapPostProcessor = AddPostProcessor(new PaletteSwapPostProcessor(999, effect));
             paletteSwapPostProcessor.SetColors(Data.Settings.Instance.currentPalette);
+            input = InputManager.Instance.GetInput(0);
         }
 
         public override void OnStart()
@@ -80,7 +84,7 @@ namespace GBJAM9.Scenes
         public override void Update()
         {
             base.Update();
-            if (Nez.Input.LeftMouseButtonPressed && tweenedIn)
+            if (input.ConfirmButton.IsPressed && tweenedIn)
             {
                 StartNewScene(null);
             }

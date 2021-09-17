@@ -37,10 +37,16 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="nez\Nez.ImGui\Nez.MG38.ImGui.csproj" />
     <ProjectReference Include="nez\Nez.Persistence\Nez.MG38.Persistence.csproj" />
     <ProjectReference Include="nez\Nez.Portable\Nez.MG38.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Data\input.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

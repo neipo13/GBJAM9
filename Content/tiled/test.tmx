@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="2">
+ <tileset firstgid="1" source="testTiles.tsx"/>
+ <layer id="1" name="collision" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2TEKgDAABEEF/f+XbbSLYKG44gxclSrZMtMEAAAAAAAAAAAAAAAAAAAAVM0f2J/87b51erTo0aJHix4terTo0aJHix4terTo0aJHix4terTo0aJHix4terTo0XLl/3rd5w/9eWdvf3V63GsZ7Hjr0dlbAwAAAAAAAAAAAAAAAAD4mg3NIQFz
+  </data>
+ </layer>
+ <objectgroup id="2" name="player">
+  <object id="1" name="spawn" gid="3" x="48" y="480" width="8" height="8"/>
+ </objectgroup>
+</map>

@@ -45,6 +45,15 @@
     <ProjectReference Include="nez\Nez.Portable\Nez.MG38.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Content\img\testTiles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\tiled\test.tmx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Content\tiled\testTiles.tsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\input.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -42,8 +42,8 @@ namespace GBJAM9.Effects
 
         private Matrix GetView()
         {
-            int width = NezGame.GraphicsDevice.Viewport.Width;
-            int height = NezGame.GraphicsDevice.Viewport.Height;
+            int width = NezGame.designWidth;
+            int height = NezGame.designHeight;
             Vector2 origin = new Vector2(width / 2f, height / 2f);
 
             return
@@ -56,7 +56,7 @@ namespace GBJAM9.Effects
             return
                 Matrix.CreateScale(size.X, size.Y, 1f) *
                 GetView() *
-                Matrix.CreateScale(1f / Core.GraphicsDevice.Viewport.Width, 1f / Core.GraphicsDevice.Viewport.Height, 1f);
+                Matrix.CreateScale(1f / NezGame.designWidth, 1f / NezGame.designHeight, 1f);
         }
     }
 }

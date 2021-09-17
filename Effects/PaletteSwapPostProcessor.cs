@@ -59,8 +59,8 @@ namespace GBJAM9.Effects
             AddColorsToMatrix(Palette.Default, color0, color1, color2, color3);
 
             //gb
-            color0 = new Color(52, 104, 86, 255);
-            color1 = new Color(36, 49, 55, 255);
+            color0 = new Color(36, 49, 55, 255);
+            color1 = new Color(52, 104, 86, 255);
             color2 = new Color(136, 192, 112, 255);
             color3 = new Color(224, 248, 208, 255);
             AddColorsToMatrix(Palette.GameGuy, color0, color1, color2, color3);

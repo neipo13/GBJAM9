@@ -28,7 +28,7 @@ namespace GBJAM9.Effects
             this.size = size;
         }
 
-        public override void OnPreRender(Camera camera)
+        public override void OnPreRender(Nez.Camera camera)
         {
             base.OnPreRender(camera);
             // set the time variable

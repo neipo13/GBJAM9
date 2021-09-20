@@ -10,6 +10,7 @@ using System.Text;
 using System.Linq;
 using GBJAM9.Input;
 using Nez.Tiled;
+using GBJAM9.Camera;
 
 namespace GBJAM9.Scenes
 {
@@ -18,6 +19,9 @@ namespace GBJAM9.Scenes
         PaletteSwapPostProcessor paletteSwapPostProcessor;
         InputHandler input;
         Entity scrollingSpriteEntity;
+        CameraShake cameraShake;
+        BoundedFollowCamera followCamera;
+        CameraBounds camBounds;
 
         public override void Initialize()
         {
@@ -55,8 +59,47 @@ namespace GBJAM9.Scenes
             Camera.Position = new Vector2(spawn.X, spawn.Y);
             var mapEntity = CreateEntity("map");
             var mapRenderer = new TiledMapRenderer(map, "collision");
+            mapRenderer.PhysicsLayer = Data.PhysicsLayers.tiles;
             mapRenderer.SetLayersToRender(new string[] { "collision" });
             mapEntity.AddComponent(mapRenderer);
+
+            
+
+            var player = new Player.Player();
+            player.Position = new Vector2(spawn.X, spawn.Y - 10);
+            AddEntity(player);
+
+            var cameraBoundsLayer = map.ObjectGroups["camera_areas"];
+            var cameraBounds = new List<CameraArea>();
+            CameraArea currentBounds = null;
+            foreach (TmxObject o in cameraBoundsLayer.Objects.OrderBy(o => o.Name))
+            {
+                //make this parse more robust
+                var id = int.Parse(o.Name);
+                var rect = new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height);
+                var area = new CameraArea(id, rect);
+                if (rect.Contains(player.Position.X, player.Position.Y))
+                {
+                    currentBounds = area;
+                }
+                cameraBounds.Add(area);
+            }
+            //var bounds = new CameraBounds(currentBounds, cameraBounds.ToArray(), player);
+            //camera.addComponent(bounds);
+            var follow = new BoundedFollowCamera(player, currentBounds, cameraBounds.ToArray());
+            Camera.AddComponent(follow);
+            cameraShake = Camera.AddComponent(new CameraShake());
+            cameraShake.Enabled = false;
+            follow.cameraShake = cameraShake;
+
+            //var camFollow = new FollowCamera(player);
+            //Camera.AddComponent(camFollow);
+        }
+
+
+        public void OnCameraBoundChangedTransition(CameraBoundsChangedEventArgs args)
+        {
+
         }
 
         public override void Update()
@@ -68,9 +111,6 @@ namespace GBJAM9.Scenes
                 Data.Settings.Instance.currentPalette = (Palette)pal;
                 paletteSwapPostProcessor.SetColors(Data.Settings.Instance.currentPalette);
             }
-
-            Camera.Position += input.LeftStickInput;
-            scrollingSpriteEntity.Position = Camera.Position + new Vector2(NezGame.designWidth / 2f, NezGame.designHeight / 2f);
         }
     }
 }

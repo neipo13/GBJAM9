@@ -1,4 +1,5 @@
 ﻿using GBJAM9.Effects;
+using GBJAM9.Player.Weapons;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,5 +39,7 @@ namespace GBJAM9.Data
         /// Holds list of completed Bosses
         /// </summary>
         public List<Bosses> bossesDefeated { get; set; } = new List<Bosses>();
+
+        public List<WeaponType> weaponsAvailable { get; set; } = new List<WeaponType>() { WeaponType.Buster };
     }
 }

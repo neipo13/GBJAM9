@@ -21,8 +21,12 @@
     <None Remove="nez\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Content\effects\white_flash.fx" />
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\effects\white_flash.fx" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icon.ico" />

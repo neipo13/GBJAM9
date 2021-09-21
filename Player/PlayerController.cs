@@ -18,7 +18,7 @@ namespace GBJAM9.Player
         RoomTransition,
         DebugFly
     }
-    public class PlayerController : Nez.AI.FSM.SimpleStateMachine<PlayerState>
+    public class PlayerController : Nez.AI.FSM.SimpleStateMachine<PlayerState>, ITriggerListener
     {
         SpriteAnimator animator;
         BoxCollider moveCollider;
@@ -32,6 +32,7 @@ namespace GBJAM9.Player
         Vector2 velocity;
 
         public float moveSpeed = 95f;
+        public float hitSlideSpeed = 50f;
         const float gravity = 700f;
 
         public bool isGrounded => collisionResult.Normal.Y < 0;
@@ -48,6 +49,8 @@ namespace GBJAM9.Player
         SubpixelVector2 subPixelVector2 = new SubpixelVector2();
 
         readonly float jumpHeight = 8 * 6.5f; //tilesize * tiles high
+
+        float hitDirX = 0f;
 
         public override void OnAddedToEntity()
         {
@@ -91,8 +94,16 @@ namespace GBJAM9.Player
             base.Update();
         }
 
-        #region Normal
+        public void SetState(PlayerState state)
+        {
+            CurrentState = state;
+        }
 
+        #region Normal
+        void Normal_Enter()
+        {
+
+        }
         void Normal_Tick()
         {
             Move();
@@ -205,6 +216,59 @@ namespace GBJAM9.Player
         public void EndRoomTransition()
         {
             CurrentState = PlayerState.Normal;
+        }
+        #endregion
+
+        #region Hit
+        void Hit_Enter()
+        {
+            //change anim to hit
+            Jump();
+        }
+
+        void Hit_Tick()
+        {
+
+            velocity.X = hitSlideSpeed * -hitDirX;
+            velocity.Y += gravity * Time.DeltaTime;
+
+            var movement = velocity * Time.DeltaTime;
+            mover.CalculateMovement(ref movement, out collisionResult);
+            subPixelVector2.Update(ref movement);
+            mover.ApplyMovement(movement);
+
+            if (isGrounded) CurrentState = PlayerState.Normal;
+        }
+
+        void Hit_Exit()
+        {
+            //change anim to idle
+        }
+        #endregion
+
+        #region ITriggerListener
+        public void OnTriggerEnter(Collider other, Collider local)
+        {
+            if((other.PhysicsLayer & Data.PhysicsLayers.enemy_shoot) != 0)
+            {
+                var health = this.Entity.GetComponent<SharedComponents.Health>();
+                health.Hit(1);
+
+                bool right = (other.Entity.Position.X - local.Entity.Position.X) > 0;
+
+                if (right)
+                {
+                    hitDirX = 1;
+                }
+                else
+                {
+                    hitDirX = -1;
+                }
+            }
+        }
+
+        public void OnTriggerExit(Collider other, Collider local)
+        {
         }
         #endregion
     }

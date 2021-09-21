@@ -22,6 +22,7 @@ namespace GBJAM9.Data
         public const int enemy_hit = 1 << 6;
         public const int enemy_trigger = 1 << 7;
         public const int enemy_shoot = 1 << 8;
+        public const int camera_activator = 1 << 9;
 
     }
 }

@@ -27,7 +27,8 @@ namespace GBJAM9
             Core.RegisterGlobalManager(imGuiManager);
             var policy = Scene.SceneResolutionPolicy.BestFit;
             Scene.SetDefaultDesignResolution(designWidth, designHeight, policy, 0, 0);
-            Scene = new Scenes.SplashScreenScene(Scenes.SplashType.GBJAM);
+            //Scene = new Scenes.SplashScreenScene(Scenes.SplashType.GBJAM);
+            Scene = new Scenes.Game("test");
         }
     }
 }

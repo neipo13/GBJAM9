@@ -2,9 +2,9 @@
 
 
 sampler2D _mainTex;
-uniform float2 sprite_size;
-uniform float4 outline_color;
-uniform float4 inside_color;
+float2 sprite_size;
+float4 outline_color;
+float4 inside_color;
 
 
 struct PixelInput {

@@ -14,7 +14,7 @@ using GBJAM9.Camera;
 
 namespace GBJAM9.Scenes
 {
-    public class Test : Scene
+    public class Game : Scene
     {
         PaletteSwapPostProcessor paletteSwapPostProcessor;
         InputHandler input;
@@ -22,6 +22,13 @@ namespace GBJAM9.Scenes
         CameraShake cameraShake;
         BoundedFollowCamera followCamera;
         CameraBounds camBounds;
+
+        string mapName;
+
+        public Game(string mapName)
+        {
+            this.mapName = mapName;
+        }
 
         public override void Initialize()
         {
@@ -48,12 +55,12 @@ namespace GBJAM9.Scenes
             spriteRenderer.Material = material;
             spriteRenderer.RenderLayer = (int)Data.RenderLayer.Background;
             scrollingSpriteEntity = new Entity("sprite-scroll");
-            scrollingSpriteEntity.Scale = new Vector2(NezGame.designWidth/texture.Width, NezGame.designHeight/texture.Height);
+            scrollingSpriteEntity.Scale = new Vector2(NezGame.designWidth / texture.Width, NezGame.designHeight / texture.Height);
             scrollingSpriteEntity.AddComponent(spriteRenderer);
             scrollingSpriteEntity.Position = new Vector2(NezGame.designWidth / 2f, NezGame.designHeight / 2f);
             AddEntity(scrollingSpriteEntity);
 
-            var map = Content.LoadTiledMap("Content/tiled/test.tmx");
+            var map = Content.LoadTiledMap($"Content/tiled/{mapName}.tmx");
             var playerGroup = map.ObjectGroups["player"];
             var spawn = playerGroup.Objects["spawn"];
             Camera.Position = new Vector2(spawn.X, spawn.Y);
@@ -63,7 +70,7 @@ namespace GBJAM9.Scenes
             mapRenderer.SetLayersToRender(new string[] { "collision" });
             mapEntity.AddComponent(mapRenderer);
 
-            
+
 
             var player = new Player.Player();
             player.Position = new Vector2(spawn.X, spawn.Y - 10);
@@ -92,8 +99,28 @@ namespace GBJAM9.Scenes
             cameraShake.Enabled = false;
             follow.cameraShake = cameraShake;
 
+            var cameraActivatorBox = new BoxCollider(NezGame.designWidth, NezGame.designHeight);
+            cameraActivatorBox.PhysicsLayer = Data.PhysicsLayers.camera_activator;
+            cameraActivatorBox.CollidesWithLayers = Data.PhysicsLayers.enemy_trigger;
+            cameraActivatorBox.IsTrigger = true;
+            Camera.AddComponent(cameraActivatorBox);
+            var camTriggerHelper = new CameraTriggerHelper();
+            Camera.AddComponent(camTriggerHelper);
+
             //var camFollow = new FollowCamera(player);
             //Camera.AddComponent(camFollow);
+
+
+            var enemiesLayer = map.ObjectGroups["enemies"];
+            foreach (TmxObject o in enemiesLayer.Objects.OrderBy(o => o.Name))
+            {
+                var flashEffect = Content.Load<Effect>("effects/white_flash");
+                var flashMat = new WhiteFlashMaterial(flashEffect, new Vector2(16));
+                var animator = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/testEnemy", Content);
+                var enemy = new Enemies.EnemyEntity("test", flashMat, animator);
+                enemy.Position = new Vector2(o.X, o.Y);
+                AddEntity(enemy);
+            }
         }
 
 

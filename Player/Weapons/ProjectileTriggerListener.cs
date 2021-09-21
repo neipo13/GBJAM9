@@ -10,7 +10,15 @@ namespace GBJAM9.Player.Weapons
         public IProjectile projectile;
         public void OnTriggerEnter(Collider other, Collider local)
         {
-            projectile.TurnOnOff(false);
+            if(other.Enabled) projectile.TurnOnOff(false);
+            if (other.Enabled && other.PhysicsLayer.IsFlagSet(Data.PhysicsLayers.enemy_hit))
+            {
+                var enemy = other.Entity as Enemies.EnemyEntity;
+                if(enemy != null)
+                {
+                    enemy.health.Hit(1);
+                }
+            }
         }
 
         public void OnTriggerExit(Collider other, Collider local)

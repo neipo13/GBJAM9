@@ -99,7 +99,7 @@ namespace GBJAM9.Scenes
                 switch (type)
                 {
                     case SplashType.GBJAM:
-                        nextScene = new Scenes.Test();
+                        nextScene = new Scenes.Game("test");
                         break;
                 }
                 Core.StartSceneTransition(new FadeTransition(() => nextScene));

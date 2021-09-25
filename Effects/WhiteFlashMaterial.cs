@@ -22,5 +22,6 @@ namespace GBJAM9.Effects
             this.outlineColor.SetValue(new Vector4(0.75f, 0.75f, 0.75f, 1f));
             this.insideColor.SetValue(Color.White.ToVector4());
         }
+
     }
 }

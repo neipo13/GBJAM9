@@ -67,14 +67,26 @@ namespace GBJAM9.Enemies
         void OnHit()
         {
             //white flash for a bit then remove
-            animator.Material = whiteFlashMaterial;
-            Core.Schedule(FLASH_TIME, (t) => animator.Material = null);
+            if(animator != null)
+            {
+                animator.Material = whiteFlashMaterial;
+                Core.Schedule(FLASH_TIME, (t) => {
+                    if(animator != null) animator.Material = null;
+                });
+            }
         }
 
         void OnDeath()
         {
             //explosion
             //remove
+            animator.Material = null;
+            whiteFlashMaterial = null;
+            hitBox = null;
+            hurtBox = null;
+            moveBox = null;
+            animator = null;
+            health = null;
             this.Destroy();
         }
 

@@ -14,7 +14,7 @@ using GBJAM9.Camera;
 
 namespace GBJAM9.Scenes
 {
-    public class Game : Scene
+    public class GameScene : Scene
     {
         PaletteSwapPostProcessor paletteSwapPostProcessor;
         InputHandler input;
@@ -23,9 +23,11 @@ namespace GBJAM9.Scenes
         BoundedFollowCamera followCamera;
         CameraBounds camBounds;
 
+        public Dictionary<int, Data.Checkpoint> checkpoints;
+
         string mapName;
 
-        public Game(string mapName)
+        public GameScene(string mapName)
         {
             this.mapName = mapName;
         }
@@ -39,8 +41,8 @@ namespace GBJAM9.Scenes
             paletteSwapPostProcessor = AddPostProcessor(new PaletteSwapPostProcessor(999, effect));
             paletteSwapPostProcessor.SetColors(Palette.GameGuy);
             input = InputManager.Instance.GetInput(0);
-
-
+            Data.Settings.Instance.currentCheckpoint = 0;
+            checkpoints = new Dictionary<int, Data.Checkpoint>();
         }
 
         public override void OnStart()
@@ -72,7 +74,8 @@ namespace GBJAM9.Scenes
 
 
 
-            var player = new Player.Player();
+            var playerAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/mrpeanut", Content);
+            var player = new Player.Player(playerAnim);
             player.Position = new Vector2(spawn.X, spawn.Y - 10);
             AddEntity(player);
 
@@ -114,12 +117,35 @@ namespace GBJAM9.Scenes
             var enemiesLayer = map.ObjectGroups["enemies"];
             foreach (TmxObject o in enemiesLayer.Objects.OrderBy(o => o.Name))
             {
-                var flashEffect = Content.Load<Effect>("effects/white_flash");
-                var flashMat = new WhiteFlashMaterial(flashEffect, new Vector2(16));
-                var animator = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/testEnemy", Content);
-                var enemy = new Enemies.EnemyEntity("test", flashMat, animator);
-                enemy.Position = new Vector2(o.X, o.Y);
-                AddEntity(enemy);
+                var type = o.Type.ToLower();
+                switch (type)
+                {
+                    case "guy":
+                        var flashEffect = Content.Load<Effect>("effects/white_flash");
+                        var flashMat = new WhiteFlashMaterial(flashEffect, new Vector2(24));
+                        var animator = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/richgunguy", Content);
+                        var enemy = new Enemies.BasicRichGuy.RichGuy("test", flashMat, animator);
+                        enemy.Position = new Vector2(o.X, o.Y);
+                        AddEntity(enemy);
+                        break;
+                    case "chandelier":
+                        var chandTex = Content.Load<Texture2D>("img/chandelier");
+                        var chandSprite = new Sprite(chandTex);
+                        var chandelier = new Obstacles.Chandelier(chandSprite);
+                        chandelier.Position = new Vector2(o.X, o.Y);
+                        AddEntity(chandelier);
+                        break;
+                }
+            }
+
+            var checkpointLayer = map.ObjectGroups["checkpoints"];
+            foreach (TmxObject o in checkpointLayer.Objects.OrderBy(o => o.Name))
+            {
+                int ID = int.Parse(o.Name);
+                var checkpoint = new Data.Checkpoint(ID, new Vector2(o.Width, o.Height));
+                checkpoint.Position = new Vector2(o.X + (o.Width / 2f), o.Y + (o.Height / 2f));
+                checkpoints.Add(ID, checkpoint);
+                AddEntity(checkpoint);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using GBJAM9.SharedComponents;
 using Microsoft.Xna.Framework;
 using Nez;
+using Nez.Sprites;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,30 +13,38 @@ namespace GBJAM9.Player
 
         PlayerController controller;
         BoxCollider hurtBox;
+        Health health;
+        SpriteAnimator animator;
 
-        public Player() : base("player")
+        public Player(SpriteAnimator sprite) : base("player")
         {
-            var sprite = new PrototypeSpriteRenderer(16, 24);
-            sprite.Color = Color.Black;
-            AddComponent(sprite);
+            animator = sprite;
+            AddComponent(animator);
 
-            var moveCollider = new BoxCollider(16,24)
-            {
-                PhysicsLayer = Data.PhysicsLayers.move,
-                CollidesWithLayers = Data.PhysicsLayers.tiles
-            };
+            var moveCollider = new BoxCollider(10, 24);
+            moveCollider.LocalOffset = new Vector2(0, 4);
+            moveCollider.PhysicsLayer = Data.PhysicsLayers.move;
+            moveCollider.CollidesWithLayers = Data.PhysicsLayers.tiles;
             AddComponent(moveCollider);
 
-            hurtBox = new BoxCollider(12, 16);
+            hurtBox = new BoxCollider(8, 16);
+            hurtBox.LocalOffset = new Vector2(0, 4);
             hurtBox.PhysicsLayer = Data.PhysicsLayers.player_hit;
             hurtBox.CollidesWithLayers = Data.PhysicsLayers.enemy_shoot;
             hurtBox.IsTrigger = true;
             AddComponent(hurtBox);
 
+            var triggerBox = new BoxCollider(16, 24);
+            triggerBox.LocalOffset = new Vector2(0, 4);
+            triggerBox.PhysicsLayer = Data.PhysicsLayers.player_trigger;
+            triggerBox.CollidesWithLayers = Data.PhysicsLayers.checkpoint;
+            triggerBox.IsTrigger = true;
+            AddComponent(triggerBox);
+
             var mover = new Mover();
             AddComponent(mover);
 
-            var health = new Health(10);
+            health = new Health(3);
             health.OnHit = OnHit;
             health.OnDeath = OnDeath;
             AddComponent(health);
@@ -47,11 +56,16 @@ namespace GBJAM9.Player
         void OnHit()
         {
             controller.SetState(PlayerState.Hit);
+            Scene.Camera.GetComponent<CameraShake>().Shake(10f);
         }
 
         void OnDeath()
         {
-            Core.Scene = new Scenes.Game("test");
+            health.Reset();
+            //get checkpoint location & set player position
+            var gameScene = Core.Scene as Scenes.GameScene;
+            var checkpoint = gameScene.checkpoints[Data.Settings.Instance.currentCheckpoint];
+            Position = checkpoint.Position + checkpoint.spawnPositionOffset;
         }
     }
 }

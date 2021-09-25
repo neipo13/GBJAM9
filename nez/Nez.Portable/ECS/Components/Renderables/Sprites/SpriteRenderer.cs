@@ -91,6 +91,22 @@ namespace Nez.Sprites
 		protected Vector2 _origin;
 		protected Sprite _sprite;
 
+		protected float _rotation;
+		public bool FollowsParentRotation = true;
+
+		public float Rotation
+		{
+			get
+			{
+				if (FollowsParentRotation) return this.Entity?.Rotation ?? 0;
+				return _rotation;
+			}
+			set
+			{
+				_rotation = value;
+			}
+		}
+
 
 		public SpriteRenderer()
 		{ }
@@ -188,7 +204,7 @@ namespace Nez.Sprites
 		public override void Render(Batcher batcher, Camera camera)
 		{
 			batcher.Draw(Sprite, Entity.Transform.Position + LocalOffset, Color,
-				Entity.Transform.Rotation, Origin, Entity.Transform.Scale, SpriteEffects, _layerDepth);
+				Rotation, Origin, Entity.Transform.Scale, SpriteEffects, _layerDepth);
 		}
 	}
 }

@@ -15,8 +15,10 @@ struct PixelInput {
 
 float4 SpritePixelShader(PixelInput p) : COLOR0
 {
+    float4 c = tex2D(_mainTex, p.TexCoord);
     float texelSizeX = 1.0 / sprite_size.x;
     float texelSizeY = 1.0 / sprite_size.y;
+
     
     float weight = 
         tex2D(_mainTex, float2(p.TexCoord.x + texelSizeX  , p.TexCoord.y)).a *
@@ -24,7 +26,9 @@ float4 SpritePixelShader(PixelInput p) : COLOR0
         tex2D(_mainTex, float2(p.TexCoord.x - texelSizeX  , p.TexCoord.y)).a *
         tex2D(_mainTex, float2(p.TexCoord.x               , p.TexCoord.y + texelSizeY)).a;
     
-    return lerp(outline_color, inside_color, ceil(weight));
+    float4 val = lerp(outline_color, inside_color, ceil(weight));
+    val.a = c.a;
+    return val;
 }
 
 technique SpriteBatch

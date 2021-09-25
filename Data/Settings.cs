@@ -41,5 +41,8 @@ namespace GBJAM9.Data
         public List<Bosses> bossesDefeated { get; set; } = new List<Bosses>();
 
         public List<WeaponType> weaponsAvailable { get; set; } = new List<WeaponType>() { WeaponType.Buster };
+
+
+        public int currentCheckpoint { get; set; } = 0;
     }
 }

@@ -22,6 +22,7 @@ namespace GBJAM9.Player
     {
         SpriteAnimator animator;
         BoxCollider moveCollider;
+        BoxCollider hurtCollider;
         Mover mover;
         InputHandler input;
         CollisionResult collisionResult;
@@ -56,11 +57,8 @@ namespace GBJAM9.Player
         {
             base.OnAddedToEntity();
             animator = Entity.GetComponent<SpriteAnimator>();
-            if (animator == null)
-            {
-                animator = new SpriteAnimator();
-            }
-            moveCollider = Entity.GetComponent<BoxCollider>();
+            var colliders = Entity.GetComponents<BoxCollider>();
+            hurtCollider = colliders.SingleOrDefault(c => c.PhysicsLayer == Data.PhysicsLayers.player_hit);
             mover = Entity.GetComponent<Mover>();
 
             input = InputManager.Instance.GetInput(0); // just grab player 1 for now
@@ -98,8 +96,53 @@ namespace GBJAM9.Player
         {
             CurrentState = state;
         }
+        public void PlayAnim(string animName, SpriteAnimator.LoopMode loopMode = SpriteAnimator.LoopMode.Loop, bool forceRestart = false)
+        {
+            if (animName == animator.CurrentAnimationName && !forceRestart)
+            {
+                return;
+            }
+            animator.Play(animName, loopMode);
+        }
 
         #region Normal
+
+        void ChooseNormalAnimation()
+        {
+            if (isGrounded)
+            {
+                if (input.XInput < 0f)
+                {
+                    PlayAnim("run_left");
+                }
+                else if (input.XInput > 0f)
+                {
+                    PlayAnim("run_right");
+                }
+                else
+                {
+                    if (animator.FlipX)
+                    {
+                        PlayAnim("idle_left");
+                    }
+                    else
+                    {
+                        PlayAnim("idle_right");
+                    }
+                }
+            }
+            else
+            {
+                if (animator.FlipX)
+                {
+                    PlayAnim("jump_left");
+                }
+                else
+                {
+                    PlayAnim("jump_right");
+                }
+            }
+        }
         void Normal_Enter()
         {
 
@@ -107,11 +150,11 @@ namespace GBJAM9.Player
         void Normal_Tick()
         {
             Move();
-            if(input.XInput < 0f)
+            if (input.XInput < 0f)
             {
                 animator.FlipX = true;
             }
-            else if(input.XInput > 0f)
+            else if (input.XInput > 0f)
             {
                 animator.FlipX = false;
             }
@@ -119,6 +162,7 @@ namespace GBJAM9.Player
             {
                 weapons[currentWeaponIndex]?.Shoot(!animator.FlipX);
             }
+            ChooseNormalAnimation();
         }
 
         void Move()
@@ -222,12 +266,14 @@ namespace GBJAM9.Player
         #region Hit
         void Hit_Enter()
         {
-            //change anim to hit
             Jump();
+            hurtCollider.SetEnabled(false);
         }
 
         void Hit_Tick()
         {
+            //change anim to hit
+            PlayAnim("hurt", SpriteAnimator.LoopMode.ClampForever);
 
             velocity.X = hitSlideSpeed * -hitDirX;
             velocity.Y += gravity * Time.DeltaTime;
@@ -243,13 +289,15 @@ namespace GBJAM9.Player
         void Hit_Exit()
         {
             //change anim to idle
+            hurtCollider.SetEnabled(true);
+            PlayAnim("recover", SpriteAnimator.LoopMode.ClampForever, true);
         }
         #endregion
 
         #region ITriggerListener
         public void OnTriggerEnter(Collider other, Collider local)
         {
-            if((other.PhysicsLayer & Data.PhysicsLayers.enemy_shoot) != 0)
+            if (other.Enabled && (other.PhysicsLayer & Data.PhysicsLayers.enemy_shoot) != 0)
             {
                 var health = this.Entity.GetComponent<SharedComponents.Health>();
                 health.Hit(1);

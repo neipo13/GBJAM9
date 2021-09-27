@@ -50,7 +50,7 @@ namespace GBJAM9.Camera
         /// </summary>
         public Vector2 mapSize;
 
-        Entity _targetEntity;
+        Entity _targetEntity, player;
         Collider _targetCollider;
         Vector2 _desiredPositionDelta;
         CameraStyle _cameraStyle;
@@ -84,7 +84,8 @@ namespace GBJAM9.Camera
 
             follow(_targetEntity, _cameraStyle);
 
-            playerController = _targetEntity.GetComponent<PlayerController>();
+            player = _targetEntity.Parent.Entity;
+            playerController = player.GetComponent<PlayerController>();
             InitialState = Camera.CameraStyle.BoundedFollow;
 
             // listen for changes in screen size so we can keep our deadzone properly positioned
@@ -150,7 +151,7 @@ namespace GBJAM9.Camera
             playerController.StartRoomTransition();
             var roomTransitionTimer = 0.5f;
             this.Transform.TweenPositionTo(transitionEnd, roomTransitionTimer).SetCompletionHandler(t => CurrentState = Camera.CameraStyle.BoundedFollow).Start();
-            _targetEntity.Transform.TweenPositionTo(targetTransitionEnd, roomTransitionTimer).Start();
+            player.Transform.TweenPositionTo(targetTransitionEnd, roomTransitionTimer).Start();
         }
 
         void RoomTransition_Tick()
@@ -301,13 +302,13 @@ namespace GBJAM9.Camera
         {
             Vector2 direction = Vector2.Zero;
 
-            if (_targetEntity.Position.X > (max.X - boundaryWidth))
+            if (player.Position.X > (max.X - boundaryWidth))
                 direction.X = 1;
-            else if (_targetEntity.Position.X < (min.X + boundaryWidth))
+            else if (player.Position.X < (min.X + boundaryWidth))
                 direction.X = -1;
-            else if (_targetEntity.Position.Y > (max.Y - boundaryWidth))
+            else if (player.Position.Y > (max.Y - boundaryWidth))
                 direction.Y = 1;
-            else if (_targetEntity.Position.Y < (min.Y + boundaryWidth))
+            else if (player.Position.Y < (min.Y + boundaryWidth))
                 direction.Y = -1;
 
             return direction;

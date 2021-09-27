@@ -14,7 +14,7 @@ namespace GBJAM9.Player.Weapons
         WeaponType type { get; }
         int MaxShots { get; }
         IProjectile[] Shots { get; }
-        void Shoot(bool facingRight);
+        IProjectile Shoot(bool facingRight);
         IProjectile GetNextAvailableShot();
         Scene scene { get; }
 

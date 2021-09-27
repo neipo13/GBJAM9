@@ -21,12 +21,20 @@ namespace GBJAM9.SharedComponents
             this.hp = maxHp;
         }
         public Action OnDeath;
-        public Action OnHit;
+        public Func<bool> OnHit;
         public virtual void Hit(int dmg)
         {
+            var valid = true;
+            if (dmg > 0)
+            {
+                if(OnHit != null)
+                {
+                    valid = OnHit.Invoke();
+                }
+            }
+            if (!valid) return;
             hp -= dmg;
             if (hp > maxHp) hp = maxHp;
-            if (dmg > 0) OnHit?.Invoke();
             if (hp <= 0) OnDeath?.Invoke();
         }
     }

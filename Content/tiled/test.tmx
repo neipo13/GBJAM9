@@ -1,27 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="16">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="200" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="9" nextobjectid="40">
  <tileset firstgid="1" source="testTiles.tsx"/>
  <tileset firstgid="7" source="GatsbyTiles.tsx"/>
- <layer id="1" name="collision" width="100" height="100">
+ <layer id="1" name="collision" width="200" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt0zEOgzAQRUHTh4YiCfe/aNzQhQKyEt9hRlotdOAHrQEAAAAAAAAAAAAAAAAAAABT4VR59JmLn+2OU2XrwXl6ZNEjix5Z9MiiRxY9suiRRY8semTRI4seWfTIokcWPbLokUWPLJU9lqbHr+7wf4z0nVT2ePZ59Xn3WQPut+vRdpWRzyBlr4dPfd/V7/IvGwAAAAAAAAAAAAAAAADgmw/hMBko
+   eJzt2LFuwjAYhVF3b5cObXn/Fy1WxBZTkhRybZ8jWQZ5SeD/AFEKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCD75UFLPQBbfqANn1Amz6gTR/Qpg9o00eW9+v6uK63DtYM9JHl1gcZ9JFllj7W5i5hPXKdnGeWPnqhjyz6yKKPLPrIoo8s+siijyz6yKKPLKP2UefqcvZF7KCPLPrIsOU/YF5HHxn0kWnUPnqjj0z6OO4/5lgfmfSxuJT9v8f0MS59LPTBmpn6uNfA3rPqrzl+ZM71kUkfx84qfYxLH8fOKn2M67Po48hZpY9xpX5/PKNbfbDVV1neg5+yzMDZz2+Pe9v33PerX1u263kmU/aEzxVtPMfZszXKfvb86wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACY0S+Dbzwl
   </data>
  </layer>
+ <objectgroup id="6" name="bossRoom">
+  <object id="17" name="trigger" x="450" y="337" width="24" height="152"/>
+ </objectgroup>
+ <objectgroup id="8" name="martiniBombSpawns">
+  <object id="22" gid="5" x="720" y="368" width="8" height="8"/>
+  <object id="23" gid="5" x="656" y="368" width="8" height="8"/>
+  <object id="24" gid="5" x="592" y="368" width="8" height="8"/>
+  <object id="25" gid="5" x="536" y="368" width="8" height="8"/>
+  <object id="26" gid="5" x="480" y="368" width="8" height="8"/>
+  <object id="30" gid="5" x="704" y="368" width="8" height="8"/>
+  <object id="31" gid="5" x="688" y="368" width="8" height="8"/>
+  <object id="32" gid="5" x="672" y="368" width="8" height="8"/>
+  <object id="33" gid="5" x="640" y="368" width="8" height="8"/>
+  <object id="34" gid="5" x="624" y="368" width="8" height="8"/>
+  <object id="35" gid="5" x="608" y="368" width="8" height="8"/>
+  <object id="36" gid="5" x="576" y="368" width="8" height="8"/>
+  <object id="37" gid="5" x="560" y="368" width="8" height="8"/>
+  <object id="38" gid="5" x="520" y="368" width="8" height="8"/>
+  <object id="39" gid="5" x="504" y="368" width="8" height="8"/>
+ </objectgroup>
  <objectgroup id="4" name="enemies">
   <object id="5" name="test" type="guy" gid="3" x="240" y="472" width="8" height="8"/>
-  <object id="6" name="test" type="guy" gid="3" x="600" y="480" width="8" height="8"/>
   <object id="11" type="chandelier" gid="3" x="184" y="400" width="8" height="8"/>
-  <object id="13" type="chandelier" gid="3" x="464" y="448" width="8" height="8"/>
-  <object id="14" type="chandelier" gid="3" x="512" y="448" width="8" height="8"/>
-  <object id="15" type="chandelier" gid="3" x="560" y="448" width="8" height="8"/>
+  <object id="19" type="gatsby" gid="3" x="800" y="384" width="8" height="8"/>
+  <object id="20" type="guy" gid="3" x="280" y="472" width="8" height="8"/>
+  <object id="21" type="guy" gid="3" x="264" y="472" width="8" height="8"/>
  </objectgroup>
+ <layer id="7" name="bosswall" width="200" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt0zENACAQBMFXgX+pKNgCKJlJzsHtDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADfWweA3+oCmD2j6gKYPaPqApg9o+oCmD2j6gKYPaPqApg9o+oCmD2j6gKYPaPqApg9o+oCmD2j6gKYPaPqApg9o+oDm+wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwKsNgNQYwQ==
+  </data>
+ </layer>
  <objectgroup id="5" name="checkpoints">
-  <object id="7" name="1" x="360" y="336" width="56" height="152"/>
+  <object id="7" name="1" x="440" y="336" width="32" height="152"/>
   <object id="8" name="0" x="40" y="336" width="64" height="152"/>
  </objectgroup>
  <objectgroup id="3" name="camera_areas">
   <object id="2" name="0" x="8" y="320" width="344" height="176"/>
-  <object id="3" name="1" x="352.333" y="327.333" width="312" height="168"/>
+  <object id="3" name="1" x="352.333" y="319.333" width="456" height="176"/>
  </objectgroup>
  <objectgroup id="2" name="player">
   <object id="1" name="spawn" gid="3" x="48" y="480" width="8" height="8"/>

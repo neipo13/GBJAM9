@@ -46,7 +46,7 @@ namespace GBJAM9.Player.Weapons
             return shot;
         }
 
-        public void Shoot(bool facingRight)
+        public IProjectile Shoot(bool facingRight)
         {
             var nextShot = GetNextAvailableShot();
             if(nextShot != null)
@@ -64,6 +64,7 @@ namespace GBJAM9.Player.Weapons
                     nextShot.animator.FlipX = true;
                 }
             }
+            return nextShot;
         }
     }
 }

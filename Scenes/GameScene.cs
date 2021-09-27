@@ -11,6 +11,7 @@ using System.Linq;
 using GBJAM9.Input;
 using Nez.Tiled;
 using GBJAM9.Camera;
+using GBJAM9.Enemies;
 
 namespace GBJAM9.Scenes
 {
@@ -22,6 +23,9 @@ namespace GBJAM9.Scenes
         CameraShake cameraShake;
         BoundedFollowCamera followCamera;
         CameraBounds camBounds;
+
+        TmxMap map;
+        Entity mapEntity;
 
         public Dictionary<int, Data.Checkpoint> checkpoints;
 
@@ -39,7 +43,7 @@ namespace GBJAM9.Scenes
             AddRenderer<DefaultRenderer>(new DefaultRenderer());
             var effect = Content.Load<Effect>("effects/paletteswap");
             paletteSwapPostProcessor = AddPostProcessor(new PaletteSwapPostProcessor(999, effect));
-            paletteSwapPostProcessor.SetColors(Palette.GameGuy);
+            paletteSwapPostProcessor.SetColors(Data.Settings.Instance.currentPalette);
             input = InputManager.Instance.GetInput(0);
             Data.Settings.Instance.currentCheckpoint = 0;
             checkpoints = new Dictionary<int, Data.Checkpoint>();
@@ -49,32 +53,35 @@ namespace GBJAM9.Scenes
         {
             base.OnStart();
 
-            var effect = Content.Load<Effect>("effects/background_scroll");
-            var texture = Content.Load<Texture2D>("img/repeatingBgCircle");
-            var material = new MenuBackgroundScrollMat(effect, new Vector2(texture.Width, texture.Height), -0.75f);
-            var sprite = new Sprite(texture);
-            var spriteRenderer = new SpriteRenderer(sprite);
-            spriteRenderer.Material = material;
-            spriteRenderer.RenderLayer = (int)Data.RenderLayer.Background;
-            scrollingSpriteEntity = new Entity("sprite-scroll");
-            scrollingSpriteEntity.Scale = new Vector2(NezGame.designWidth / texture.Width, NezGame.designHeight / texture.Height);
-            scrollingSpriteEntity.AddComponent(spriteRenderer);
-            scrollingSpriteEntity.Position = new Vector2(NezGame.designWidth / 2f, NezGame.designHeight / 2f);
-            AddEntity(scrollingSpriteEntity);
+            //var effect = Content.Load<Effect>("effects/background_scroll");
+            //var texture = Content.Load<Texture2D>("img/repeatingBgCircle");
+            //var material = new MenuBackgroundScrollMat(effect, new Vector2(texture.Width, texture.Height), -0.75f);
+            //var sprite = new Sprite(texture);
+            //var spriteRenderer = new SpriteRenderer(sprite);
+            //spriteRenderer.Material = material;
+            //spriteRenderer.RenderLayer = (int)Data.RenderLayer.Background;
+            //scrollingSpriteEntity = new Entity("sprite-scroll");
+            //scrollingSpriteEntity.Scale = new Vector2(NezGame.designWidth / texture.Width, NezGame.designHeight / texture.Height);
+            //scrollingSpriteEntity.AddComponent(spriteRenderer);
+            //scrollingSpriteEntity.Position = new Vector2(NezGame.designWidth / 2f, NezGame.designHeight / 2f);
+            //AddEntity(scrollingSpriteEntity);
 
-            var map = Content.LoadTiledMap($"Content/tiled/{mapName}.tmx");
+            map = Content.LoadTiledMap($"Content/tiled/{mapName}.tmx");
             var playerGroup = map.ObjectGroups["player"];
             var spawn = playerGroup.Objects["spawn"];
             Camera.Position = new Vector2(spawn.X, spawn.Y);
-            var mapEntity = CreateEntity("map");
+            mapEntity = CreateEntity("map");
             var mapRenderer = new TiledMapRenderer(map, "collision");
             mapRenderer.PhysicsLayer = Data.PhysicsLayers.tiles;
             mapRenderer.SetLayersToRender(new string[] { "collision" });
+            mapRenderer.RenderLayer = (int)Data.RenderLayer.Tiles;
             mapEntity.AddComponent(mapRenderer);
 
 
 
+
             var playerAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/mrpeanut", Content);
+            playerAnim.RenderLayer = (int)Data.RenderLayer.Object;
             var player = new Player.Player(playerAnim);
             player.Position = new Vector2(spawn.X, spawn.Y - 10);
             AddEntity(player);
@@ -96,7 +103,7 @@ namespace GBJAM9.Scenes
             }
             //var bounds = new CameraBounds(currentBounds, cameraBounds.ToArray(), player);
             //camera.addComponent(bounds);
-            var follow = new BoundedFollowCamera(player, currentBounds, cameraBounds.ToArray());
+            var follow = new BoundedFollowCamera(player.aimPoint, currentBounds, cameraBounds.ToArray());
             Camera.AddComponent(follow);
             cameraShake = Camera.AddComponent(new CameraShake());
             cameraShake.Enabled = false;
@@ -113,6 +120,16 @@ namespace GBJAM9.Scenes
             //var camFollow = new FollowCamera(player);
             //Camera.AddComponent(camFollow);
 
+            var martiniPositions = new List<Vector2>();
+            if (map.ObjectGroups.Contains("martiniBombSpawns"))
+            {
+                var martiniLayer = map.ObjectGroups["martiniBombSpawns"];
+                foreach (TmxObject o in martiniLayer.Objects)
+                {
+                    martiniPositions.Add(new Vector2(o.X, o.Y));
+                }
+            }
+
 
             var enemiesLayer = map.ObjectGroups["enemies"];
             foreach (TmxObject o in enemiesLayer.Objects.OrderBy(o => o.Name))
@@ -121,10 +138,11 @@ namespace GBJAM9.Scenes
                 switch (type)
                 {
                     case "guy":
-                        var flashEffect = Content.Load<Effect>("effects/white_flash");
-                        var flashMat = new WhiteFlashMaterial(flashEffect, new Vector2(24));
-                        var animator = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/richgunguy", Content);
-                        var enemy = new Enemies.BasicRichGuy.RichGuy("test", flashMat, animator);
+                        var guyFlashEffect = Content.Load<Effect>("effects/white_flash");
+                        var guyFlash = new WhiteFlashMaterial(guyFlashEffect, new Vector2(24));
+                        var guyAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/richgunguy", Content);
+                        guyAnim.RenderLayer = (int)Data.RenderLayer.Object;
+                        var enemy = new Enemies.BasicRichGuy.RichGuy("test", guyFlash, guyAnim);
                         enemy.Position = new Vector2(o.X, o.Y);
                         AddEntity(enemy);
                         break;
@@ -135,6 +153,34 @@ namespace GBJAM9.Scenes
                         chandelier.Position = new Vector2(o.X, o.Y);
                         AddEntity(chandelier);
                         break;
+                    case "gatsby":
+                        var gatsFlashEffect = Content.Load<Effect>("effects/white_flash");
+                        var gatsFlash = new WhiteFlashMaterial(gatsFlashEffect, new Vector2(32));                        
+                        var gatsAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/gatsby", Content);
+                        gatsAnim.RenderLayer = (int)Data.RenderLayer.Object;
+                        var gats = new Enemies.Gatsby.GatsbyEntity(gatsAnim, gatsFlash, martiniPositions);
+                        gats.Position = new Vector2(o.X, o.Y);
+                        AddEntity(gats);
+                        break;
+                }
+            }
+
+            var bossRoomLayer = map.ObjectGroups["bossRoom"];
+            foreach (TmxObject o in bossRoomLayer.Objects)
+            {
+                var name = o.Name.ToLower();
+                if(name == "trigger")
+                {
+                    var rect = new Rectangle((int)o.X, (int)o.Y, (int)o.Width, (int)o.Height);
+                    var e = new Entity("bossTrigger");
+                    var triggerCol = new BoxCollider(rect);
+                    triggerCol.IsTrigger = true;
+                    triggerCol.PhysicsLayer = Data.PhysicsLayers.checkpoint;
+                    triggerCol.CollidesWithLayers = Data.PhysicsLayers.player_trigger;
+                    e.AddComponent(triggerCol);
+                    var wallTrigger = new BossWallTriggerListener(SpawnBossWall);
+                    e.AddComponent(wallTrigger);
+                    AddEntity(e);
                 }
             }
 
@@ -149,6 +195,14 @@ namespace GBJAM9.Scenes
             }
         }
 
+        public void SpawnBossWall()
+        {
+            var bossRoomMapRenderer = new TiledMapRenderer(map, "bosswall");
+            bossRoomMapRenderer.PhysicsLayer = Data.PhysicsLayers.tiles;
+            bossRoomMapRenderer.SetLayersToRender(new string[] { "bosswall" });
+            bossRoomMapRenderer.RenderLayer = (int)Data.RenderLayer.Tiles;
+            mapEntity.AddComponent(bossRoomMapRenderer);
+        }
 
         public void OnCameraBoundChangedTransition(CameraBoundsChangedEventArgs args)
         {

@@ -1078,7 +1078,7 @@ namespace Nez
 
 		void DrawPrimitives(Texture texture, int baseSprite, int batchSize)
 		{
-			if (_customEffect != null)
+			if (_customEffect != null && !_customEffect.IsDisposed)
 			{
 				foreach (var pass in _customEffect.CurrentTechnique.Passes)
 				{

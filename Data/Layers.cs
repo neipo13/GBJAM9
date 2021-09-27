@@ -6,6 +6,7 @@ namespace GBJAM9.Data
 {
     public enum RenderLayer
     {
+        UI,
         Foreground,
         Object,
         Tiles,

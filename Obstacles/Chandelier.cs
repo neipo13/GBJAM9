@@ -19,6 +19,7 @@ namespace GBJAM9.Obstacles
             //sprite renderer
             var renderer = new SpriteRenderer(sprite);
             renderer.FollowsParentRotation = false;
+            renderer.RenderLayer = (int)Data.RenderLayer.Tiles;
             AddComponent(renderer);
 
             //mover

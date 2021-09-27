@@ -16,6 +16,8 @@ namespace GBJAM9.Player
         Health health;
         SpriteAnimator animator;
 
+        public Entity aimPoint;
+
         public Player(SpriteAnimator sprite) : base("player")
         {
             animator = sprite;
@@ -49,14 +51,21 @@ namespace GBJAM9.Player
             health.OnDeath = OnDeath;
             AddComponent(health);
 
+            aimPoint = new Entity("aim");
+            aimPoint.SetParent(this);
+            aimPoint.LocalPosition = new Vector2(16f, 0f);
+
             controller = new PlayerController();
+            controller.aimPoint = aimPoint;
             AddComponent(controller);
         }
 
-        void OnHit()
+        bool OnHit()
         {
+            if (controller.invincible) return false;
             controller.SetState(PlayerState.Hit);
             Scene.Camera.GetComponent<CameraShake>().Shake(10f);
+            return true;
         }
 
         void OnDeath()

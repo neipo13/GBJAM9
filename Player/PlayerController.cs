@@ -36,6 +36,8 @@ namespace GBJAM9.Player
         public float hitSlideSpeed = 50f;
         const float gravity = 700f;
 
+        public Entity aimPoint;
+
         public bool isGrounded => collisionResult.Normal.Y < 0;
 
         public bool wasGroundedLastFrame;
@@ -44,6 +46,10 @@ namespace GBJAM9.Player
         public const int landingInputBufferFrames = 4;
         public int landingInputBufferTimer = 0;
         public int justJumpedBufferTimer = 0;
+
+        public float invincibilityTime = 0.75f;
+        public float invincibilityTimer = 0f;
+        public bool invincible => invincibilityTimer > 0f;
         public bool canJumpThisFrame => (isGrounded || (offGroundInputBufferTimer > 0 && justJumpedBufferTimer <= 0));
 
 
@@ -88,6 +94,10 @@ namespace GBJAM9.Player
 
         public override void Update()
         {
+            if(invincibilityTimer > 0f)
+            {
+                invincibilityTimer -= Time.DeltaTime;
+            }
             wasGroundedLastFrame = isGrounded;
             base.Update();
         }
@@ -153,14 +163,21 @@ namespace GBJAM9.Player
             if (input.XInput < 0f)
             {
                 animator.FlipX = true;
+                aimPoint.LocalPosition = new Vector2(Math.Abs(aimPoint.Transform.LocalPosition.X) * -1, aimPoint.Transform.LocalPosition.Y);
             }
             else if (input.XInput > 0f)
             {
                 animator.FlipX = false;
+                aimPoint.LocalPosition = new Vector2(Math.Abs(aimPoint.Transform.LocalPosition.X), aimPoint.Transform.LocalPosition.Y);
             }
             if (input.ShootButton.IsPressed)
             {
-                weapons[currentWeaponIndex]?.Shoot(!animator.FlipX);
+                IProjectile bullet = weapons[currentWeaponIndex]?.Shoot(!animator.FlipX);
+                if(bullet != null)
+                {
+                    var direction = animator.FlipX ? -1 : 1;
+                    bullet.position += new Vector2(4f * direction, 4f);
+                }
             }
             ChooseNormalAnimation();
         }
@@ -268,6 +285,7 @@ namespace GBJAM9.Player
         {
             Jump();
             hurtCollider.SetEnabled(false);
+            invincibilityTimer = invincibilityTime;
         }
 
         void Hit_Tick()

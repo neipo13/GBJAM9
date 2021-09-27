@@ -1,5 +1,6 @@
 ﻿using GBJAM9.Effects;
 using GBJAM9.SharedComponents;
+using GBJAM9.Util;
 using Microsoft.Xna.Framework;
 using Nez;
 using Nez.Sprites;
@@ -20,9 +21,9 @@ namespace GBJAM9.Enemies
 
         public const float FLASH_TIME = 0.15f;
 
-        public EnemyEntity(string entityName, WhiteFlashMaterial whiteFlashMaterial, SpriteAnimator animator) : base(entityName)
+        public EnemyEntity(string entityName, WhiteFlashMaterial whiteFlashMaterial, SpriteAnimator animator, int hp = 3) : base(entityName)
         {
-            health = new Health(3);
+            health = new Health(hp);
 
             this.whiteFlashMaterial = whiteFlashMaterial;
 
@@ -64,7 +65,7 @@ namespace GBJAM9.Enemies
             Core.Schedule(0.1f, (t) => Deactivate());
         }
 
-        void OnHit()
+        protected virtual bool OnHit()
         {
             //white flash for a bit then remove
             if(animator != null)
@@ -74,11 +75,22 @@ namespace GBJAM9.Enemies
                     if(animator != null) animator.Material = null;
                 });
             }
+            return true;
         }
 
-        void OnDeath()
+        protected virtual void OnDeath()
         {
             //explosion
+            var numExplosions = Nez.Random.Range(2, 6);
+            for (int i = 0; i < numExplosions; i++)
+            {
+                var splodeAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/mmboom", Scene.Content);
+                var splode = new Explosion(splodeAnim);
+                var offsetX = Nez.Random.Range(-16f, 16f);
+                var offsetY = Nez.Random.Range(-16f, 16f);
+                splode.Position = Position + new Vector2(offsetX, offsetY);
+                Scene.AddEntity(splode);
+            }
             //remove
             animator.Material = null;
             whiteFlashMaterial = null;

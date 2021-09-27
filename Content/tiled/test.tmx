@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="200" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="9" nextobjectid="40">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="200" height="100" tilewidth="8" tileheight="8" infinite="0" nextlayerid="10" nextobjectid="40">
  <tileset firstgid="1" source="testTiles.tsx"/>
  <tileset firstgid="7" source="GatsbyTiles.tsx"/>
+ <layer id="9" name="background" width="200" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt17sKQkEMBcDtfBRaaKf+/2+6hcIiOShoFWcgcNncdElxxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfmk3a/9FH7rZzNo+vg+zjsX7KPrVPHSz7vdp1rl4H0W/modu0n5/uvfug87cB2Trfq/5u9r7Kp+7DzqTzyGTzyGTPyBzH5DJ55DJ55DJ55DJH5C5D8je5fPr8u+zfwvz0M0n+fzyUmkeupHPIZM/IHMfAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8D/uaJIGmA==
+  </data>
+ </layer>
  <layer id="1" name="collision" width="200" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2LFuwjAYhVF3b5cObXn/Fy1WxBZTkhRybZ8jWQZ5SeD/AFEKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCD75UFLPQBbfqANn1Amz6gTR/Qpg9o00eW9+v6uK63DtYM9JHl1gcZ9JFllj7W5i5hPXKdnGeWPnqhjyz6yKKPLPrIoo8s+siijyz6yKKPLKP2UefqcvZF7KCPLPrIsOU/YF5HHxn0kWnUPnqjj0z6OO4/5lgfmfSxuJT9v8f0MS59LPTBmpn6uNfA3rPqrzl+ZM71kUkfx84qfYxLH8fOKn2M67Po48hZpY9xpX5/PKNbfbDVV1neg5+yzMDZz2+Pe9v33PerX1u263kmU/aEzxVtPMfZszXKfvb86wMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACY0S+Dbzwl
+   eJzt2NFOwjAYhuF5ASbGA3X3f6PaDMLJqmxD9rV9nqQpZAkZ8L/AmCYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYASfKwtY6APq9AF1+oA6fUCdPqBOH1Cnjyxvl/XSwBqBPrJc+yCDPrKM0sfa3CWse86T84zSRyv0kUUfWfSRRR9Z9JFFH1n0kUUfWfSRpdc+ylzNZ5/EDvrIoo8MW/4D5nn0kUEfmXrtozX6yKSP4x4xx/rIpI/FPO3/PaaPfuljoQ/WHO2jvH9fl5V+PfxbA3uPFX/N8T1zro9MI31/6IOt9HHsWKGPfunj2LFCH/1K7eP9Z70++DH1wVYf0+0aew64f73d2r7neT/7tWW7lmcyZU/4XNHG/zh7tnrZz55/fQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAj+gaT5j0L
   </data>
  </layer>
  <objectgroup id="6" name="bossRoom">

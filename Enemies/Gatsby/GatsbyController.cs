@@ -301,7 +301,7 @@ namespace GBJAM9.Enemies.Gatsby
                 //spawn Explosion
 
                 var splodeAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/mmboom", Entity.Scene.Content);
-                var splode = new Explosion(splodeAnim);
+                var splode = new Explosion(splodeAnim, true);
                 var offsetX = Nez.Random.Range(-dieOffsetMax, dieOffsetMax);
                 var offsetY = Nez.Random.Range(-dieOffsetMax, dieOffsetMax);
                 splode.Position = Entity.Position + new Vector2(offsetX, offsetY);

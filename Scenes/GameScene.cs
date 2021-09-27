@@ -77,8 +77,10 @@ namespace GBJAM9.Scenes
             mapRenderer.RenderLayer = (int)Data.RenderLayer.Tiles;
             mapEntity.AddComponent(mapRenderer);
 
-
-
+            var bgRenderer = new TiledMapRenderer(map);
+            bgRenderer.SetLayersToRender(new string[] { "background" });
+            bgRenderer.RenderLayer = (int)Data.RenderLayer.Background;
+            mapEntity.AddComponent(bgRenderer);
 
             var playerAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/mrpeanut", Content);
             playerAnim.RenderLayer = (int)Data.RenderLayer.Object;

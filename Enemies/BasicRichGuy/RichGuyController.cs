@@ -25,7 +25,7 @@ namespace GBJAM9.Enemies.BasicRichGuy
         CollisionResult collisionResult = new CollisionResult();
         List<CollisionResult> collisionResults = new List<CollisionResult>();
         SubpixelVector2 subPixelVector2 = new SubpixelVector2();
-        public bool isGrounded => collisionResults.Any(c => c.Normal.Y < 0);
+        public bool isGrounded;// => collisionResults.Count > 0 ? collisionResults.First().Normal.Y > 0 : false;
 
         public int direction = -1;
 
@@ -40,7 +40,7 @@ namespace GBJAM9.Enemies.BasicRichGuy
             {
                 animator.FlipX = true;
             }
-
+            isGrounded = true;
             InitialState = RichGuyState.Walk;
         }
 
@@ -54,18 +54,22 @@ namespace GBJAM9.Enemies.BasicRichGuy
 
         public void Walk_Tick()
         {
+            collisionResults.Clear();
             //just walk
             velocity.X = moveSpeed * direction;
             //grav
             velocity.Y += gravity * Time.DeltaTime;
             //move
             var movement = velocity * Time.DeltaTime;
-            var expectedMoveX = movement.X;
             var moved = mover.AdvancedCalculateMovement(ref movement, collisionResults);
             subPixelVector2.Update(ref movement);
             mover.ApplyMovement(movement);
+
+            var relevantResults = collisionResults.Where(c => c.Normal.Y < 0f).ToArray();
+            isGrounded = relevantResults.Length > 0;
+
             //don't let gravity build while you're grounded
-            if (isGrounded && velocity.Y > 0f) velocity.Y = 0f;
+            if (isGrounded) velocity.Y = 0f;
 
             if(collisionResults.Any(c => direction > 0 ? c.Normal.X < 0f : c.Normal.X > 0f))
             {

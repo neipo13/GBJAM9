@@ -13,22 +13,21 @@ namespace GBJAM9
 
         ImGuiManager imGuiManager;
 
-        public NezGame() : base(windowTitle: "GBJAM9", isFullScreen: false, width: 640, height: 576)
+        public NezGame() : base(windowTitle: "GBJAM9", isFullScreen: false, width: 160, height: 144)
         {
-            ExitOnEscapeKeypress = false;
-            Window.AllowUserResizing = true;
+            ExitOnEscapeKeypress = true;
 
             Nez.Input.MaxSupportedGamePads = 1;
         }
         protected override void Initialize()
         {
             base.Initialize();
-            imGuiManager = new ImGuiManager();
-            Core.RegisterGlobalManager(imGuiManager);
             var policy = Scene.SceneResolutionPolicy.BestFit;
             Scene.SetDefaultDesignResolution(designWidth, designHeight, policy, 0, 0);
+            Screen.SetSize(designWidth, designHeight);
+            Screen.ApplyChanges();
             //Scene = new Scenes.SplashScreenScene(Scenes.SplashType.GBJAM);
-            Scene = new Scenes.GameScene("test");
+            Scene = new Scenes.GameScene("gatsby");
         }
     }
 }

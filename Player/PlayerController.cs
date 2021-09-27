@@ -301,7 +301,12 @@ namespace GBJAM9.Player
             subPixelVector2.Update(ref movement);
             mover.ApplyMovement(movement);
 
-            if (isGrounded) CurrentState = PlayerState.Normal;
+            if (isGrounded)
+            {
+                //reset invincibilityTimer
+                invincibilityTimer = invincibilityTime;
+                CurrentState = PlayerState.Normal;
+            }
         }
 
         void Hit_Exit()

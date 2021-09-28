@@ -8,7 +8,7 @@ on:
 env:
   ITCH_USER_NAME: andrewnapierkowski
   ITCH_GAME_NAME: mr-peanut-in-public-domination
-  PROJECT_PATH: Platforms/DesktopGL
+  PROJECT_PATH: ~
 
 jobs:
   build:

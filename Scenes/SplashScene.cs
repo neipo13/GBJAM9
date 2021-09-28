@@ -13,7 +13,8 @@ namespace GBJAM9.Scenes
     public enum SplashType
     {
         GBJAM,
-        US
+        US,
+        Title
     }
     public class SplashScreenScene : Scene
     {
@@ -57,6 +58,10 @@ namespace GBJAM9.Scenes
                     logoPath = "jam-logo";
                     break;
                 case SplashType.US:
+                    logoPath = "credits";
+                    break;
+                case SplashType.Title:
+                    logoPath = "Mr_Peanut_Logo";
                     break;
             }
             var logoTex = Content.Load<Texture2D>($"img/{logoPath}");
@@ -64,7 +69,7 @@ namespace GBJAM9.Scenes
             logoSprite.Color = hidden;
             Entity.AddComponent(logoSprite);
 
-            var fadeTime = 0.5f;
+            var fadeTime = 1f;
             var holdTime = 2f;
             logoSprite
                 .TweenColorTo(visible, fadeTime)
@@ -96,13 +101,28 @@ namespace GBJAM9.Scenes
             {
                 transitioning = true;
                 Scene nextScene = null;
+                bool useFade = true;
                 switch (type)
                 {
                     case SplashType.GBJAM:
+                        nextScene = new Scenes.SplashScreenScene(SplashType.US);
+                        break;
+                    case SplashType.US:
+                        nextScene = new Scenes.SplashScreenScene(SplashType.Title);
+                        break;
+                    case SplashType.Title:
                         nextScene = new Scenes.GameScene("gatsby");
+                        //useFade = false;
                         break;
                 }
-                Core.StartSceneTransition(new FadeTransition(() => nextScene));
+                if (useFade)
+                {
+                    Core.StartSceneTransition(new FadeTransition(() => nextScene));
+                }
+                else
+                {
+                    Core.Scene = nextScene;
+                }
             }
         }
 

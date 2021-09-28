@@ -34,6 +34,14 @@ namespace GBJAM9.Scenes
         public GameScene(string mapName)
         {
             this.mapName = mapName;
+
+            map = Content.LoadTiledMap($"Content/tiled/{mapName}.tmx");
+            mapEntity = CreateEntity("map");
+            var mapRenderer = new TiledMapRenderer(map, "collision");
+            mapRenderer.PhysicsLayer = Data.PhysicsLayers.tiles;
+            mapRenderer.SetLayersToRender(new string[] { "collision" });
+            mapRenderer.RenderLayer = (int)Data.RenderLayer.Tiles;
+            mapEntity.AddComponent(mapRenderer);
         }
 
         public override void Initialize()
@@ -47,6 +55,8 @@ namespace GBJAM9.Scenes
             input = InputManager.Instance.GetInput(0);
             Data.Settings.Instance.currentCheckpoint = 0;
             checkpoints = new Dictionary<int, Data.Checkpoint>();
+
+
         }
 
         public override void OnStart()
@@ -66,27 +76,21 @@ namespace GBJAM9.Scenes
             //scrollingSpriteEntity.Position = new Vector2(NezGame.designWidth / 2f, NezGame.designHeight / 2f);
             //AddEntity(scrollingSpriteEntity);
 
-            map = Content.LoadTiledMap($"Content/tiled/{mapName}.tmx");
-            var playerGroup = map.ObjectGroups["player"];
-            var spawn = playerGroup.Objects["spawn"];
-            Camera.Position = new Vector2(spawn.X, spawn.Y);
-            mapEntity = CreateEntity("map");
-            var mapRenderer = new TiledMapRenderer(map, "collision");
-            mapRenderer.PhysicsLayer = Data.PhysicsLayers.tiles;
-            mapRenderer.SetLayersToRender(new string[] { "collision" });
-            mapRenderer.RenderLayer = (int)Data.RenderLayer.Tiles;
-            mapEntity.AddComponent(mapRenderer);
-
             var bgRenderer = new TiledMapRenderer(map);
             bgRenderer.SetLayersToRender(new string[] { "background" });
             bgRenderer.RenderLayer = (int)Data.RenderLayer.Background;
             mapEntity.AddComponent(bgRenderer);
 
+            var playerGroup = map.ObjectGroups["player"];
+            var spawn = playerGroup.Objects["spawn"];
+            Camera.Position = new Vector2(spawn.X, spawn.Y);
             var playerAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/mrpeanut", Content);
             playerAnim.RenderLayer = (int)Data.RenderLayer.Object;
             var player = new Player.Player(playerAnim);
             player.Position = new Vector2(spawn.X, spawn.Y - 10);
             AddEntity(player);
+            player.Enabled = false;
+            Core.Schedule(0.2f, t => player.Enabled = true);
 
             var cameraBoundsLayer = map.ObjectGroups["camera_areas"];
             var cameraBounds = new List<CameraArea>();
@@ -128,7 +132,7 @@ namespace GBJAM9.Scenes
                 var martiniLayer = map.ObjectGroups["martiniBombSpawns"];
                 foreach (TmxObject o in martiniLayer.Objects)
                 {
-                    martiniPositions.Add(new Vector2(o.X, o.Y));
+                    martiniPositions.Add(new Vector2(o.X + (o.Width / 2f), o.Y - (o.Height / 2)));
                 }
             }
 
@@ -166,8 +170,16 @@ namespace GBJAM9.Scenes
                         break;
                 }
             }
+            var spikeLayer = map.ObjectGroups["spikes"];
+            var spikeTexture = Content.Load<Texture2D>("img/deathspike");
+            foreach (TmxObject o in spikeLayer.Objects)
+            {
+                var spike = new Obstacles.Spike(new Sprite(spikeTexture));
+                spike.Position = new Vector2(o.X + (o.Width / 2f), o.Y - (o.Height/2));
+                AddEntity(spike);
+            }
 
-            var bossRoomLayer = map.ObjectGroups["bossRoom"];
+                var bossRoomLayer = map.ObjectGroups["bossRoom"];
             foreach (TmxObject o in bossRoomLayer.Objects)
             {
                 var name = o.Name.ToLower();

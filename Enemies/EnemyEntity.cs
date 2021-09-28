@@ -104,18 +104,18 @@ namespace GBJAM9.Enemies
 
         public virtual void Activate()
         {
-            animator.Enabled = true;
-            hitBox.SetEnabled(true);
-            hurtBox.SetEnabled(true);
-            moveBox.SetEnabled(true);
+            animator?.SetEnabled(true);
+            hitBox?.SetEnabled(true);
+            hurtBox?.SetEnabled(true);
+            moveBox?.SetEnabled(true);
         }
 
         public virtual void Deactivate()
         {
-            animator.Enabled = false;
-            hitBox.SetEnabled(false);
-            hurtBox.SetEnabled(false);
-            moveBox.SetEnabled(false);
+            animator?.SetEnabled(false);
+            hitBox?.SetEnabled(false);
+            hurtBox?.SetEnabled(false);
+            moveBox?.SetEnabled(false);
         }
     }
 }

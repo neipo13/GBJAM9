@@ -24,10 +24,10 @@ namespace GBJAM9
             base.Initialize();
             var policy = Scene.SceneResolutionPolicy.BestFit;
             Scene.SetDefaultDesignResolution(designWidth, designHeight, policy, 0, 0);
-            Screen.SetSize(designWidth, designHeight);
+            Screen.SetSize(designWidth * 2, designHeight * 2);
             Screen.ApplyChanges();
-            //Scene = new Scenes.SplashScreenScene(Scenes.SplashType.GBJAM);
-            Scene = new Scenes.GameScene("gatsby");
+            Scene = new Scenes.SplashScreenScene(Scenes.SplashType.GBJAM);
+            //Scene = new Scenes.GameScene("gatsby");
         }
     }
 }

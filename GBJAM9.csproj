@@ -12,12 +12,15 @@
   <ItemGroup>
     <Compile Remove="Content\bin\**" />
     <Compile Remove="Content\obj\**" />
+    <Compile Remove="gifs\**" />
     <Compile Remove="nez\**" />
     <EmbeddedResource Remove="Content\bin\**" />
     <EmbeddedResource Remove="Content\obj\**" />
+    <EmbeddedResource Remove="gifs\**" />
     <EmbeddedResource Remove="nez\**" />
     <None Remove="Content\bin\**" />
     <None Remove="Content\obj\**" />
+    <None Remove="gifs\**" />
     <None Remove="nez\**" />
   </ItemGroup>
   <ItemGroup>

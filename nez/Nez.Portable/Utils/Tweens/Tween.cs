@@ -31,6 +31,7 @@ namespace Nez.Tweens
 		protected bool _isRelative;
 		protected Action<ITween<T>> _completionHandler;
 		protected Action<ITween<T>> _loopCompleteHandler;
+		protected Action<T> _tickHandler;
 		protected ITweenable _nextTween;
 
 		// tween state
@@ -92,6 +93,12 @@ namespace Nez.Tweens
 		public ITween<T> SetCompletionHandler(Action<ITween<T>> completionHandler)
 		{
 			_completionHandler = completionHandler;
+			return this;
+		}
+
+		public ITween<T> SetUpdateAction(Action<T> action)
+		{
+			_tickHandler = action;
 			return this;
 		}
 

@@ -54,9 +54,13 @@ namespace GBJAM9.Obstacles
             AddComponent(proj);
             proj.Enabled = false;
 
+            var platformController = new PlatformController(Vector2.Zero, 0f, false);
+            AddComponent(platformController);
+
             // controller
             var controller = new ChandelierController();
             AddComponent(controller);
+
 
         }
     }
@@ -66,6 +70,7 @@ namespace GBJAM9.Obstacles
     {
         SpriteRenderer sprite;
         Mover mover;
+        PlatformController platformController;
 
         bool wobbling = false;
         bool falling = false;
@@ -82,6 +87,8 @@ namespace GBJAM9.Obstacles
 
         BoxCollider moveBox, triggerBox, hitBox;
 
+        
+
         float startX;
         public override void OnAddedToEntity()
         {
@@ -89,6 +96,7 @@ namespace GBJAM9.Obstacles
             sprite = Entity.GetComponent<SpriteRenderer>();
             mover = Entity.GetComponent<Mover>();
             triggerHelper = new ColliderTriggerHelper(Entity);
+            platformController = Entity.GetComponent<PlatformController>();
 
             var colliders = Entity.GetComponents<BoxCollider>();
             moveBox = colliders.SingleOrDefault(c => c.PhysicsLayer.IsFlagSet(Data.PhysicsLayers.tiles));
@@ -99,7 +107,6 @@ namespace GBJAM9.Obstacles
             projectileTriggerListener = Entity.GetComponent<ProjectileTriggerListener>();
             projectileTriggerListener.Enabled = false;
             startX = Entity.Position.X;
-
         }
         public void OnTriggerEnter(Collider other, Collider local)
         {
@@ -141,18 +148,13 @@ namespace GBJAM9.Obstacles
                 if (velocity.Y < 0) velocity.Y = 100f;
                 //move
                 var movement = velocity * Time.DeltaTime;
-                //var moved = mover.CalculateMovement(ref movement, out collisionResult);
-                //subPixelVector2.Update(ref movement);
-                //mover.ApplyMovement(movement);
                 mover.Move(movement, out collisionResult);
+                platformController.UpdateRiders(movement);
 
-                if(startX != Entity.Position.X)
+                if (startX != Entity.Position.X)
                 {
                     var test = 1;
                 }
-
-                Debug.Log(velocity);
-                Debug.Log(Entity.Position);
 
                 if (Entity.Position.Y > 1000 || Entity.Position.Y < -1000) this.Entity.Destroy();
             }

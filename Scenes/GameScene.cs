@@ -140,14 +140,14 @@ namespace GBJAM9.Scenes
             var enemiesLayer = map.ObjectGroups["enemies"];
             foreach (TmxObject o in enemiesLayer.Objects.OrderBy(o => o.Name))
             {
+                var flashEffect = Content.Load<Effect>("effects/white_flash");
                 var type = o.Type.ToLower();
                 switch (type)
                 {
                     case "guy":
-                        var guyFlashEffect = Content.Load<Effect>("effects/white_flash");
-                        var guyFlash = new WhiteFlashMaterial(guyFlashEffect, new Vector2(24));
                         var guyAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/richgunguy", Content);
                         guyAnim.RenderLayer = (int)Data.RenderLayer.Object;
+                        var guyFlash = new WhiteFlashMaterial(flashEffect.Clone(), new Vector2(24));
                         var enemy = new Enemies.BasicRichGuy.RichGuy("test", guyFlash, guyAnim);
                         enemy.Position = new Vector2(o.X, o.Y);
                         AddEntity(enemy);
@@ -159,11 +159,10 @@ namespace GBJAM9.Scenes
                         chandelier.Position = new Vector2(o.X, o.Y);
                         AddEntity(chandelier);
                         break;
-                    case "gatsby":
-                        var gatsFlashEffect = Content.Load<Effect>("effects/white_flash");
-                        var gatsFlash = new WhiteFlashMaterial(gatsFlashEffect, new Vector2(32));                        
+                    case "gatsby":                    
                         var gatsAnim = Aseprite.AespriteLoader.LoadSpriteAnimatorFromAesprite("img/gatsby", Content);
                         gatsAnim.RenderLayer = (int)Data.RenderLayer.Object;
+                        var gatsFlash = new WhiteFlashMaterial(flashEffect.Clone(), new Vector2(32));
                         var gats = new Enemies.Gatsby.GatsbyEntity(gatsAnim, gatsFlash, martiniPositions);
                         gats.Position = new Vector2(o.X, o.Y);
                         AddEntity(gats);
@@ -206,6 +205,19 @@ namespace GBJAM9.Scenes
                 checkpoint.Position = new Vector2(o.X + (o.Width / 2f), o.Y + (o.Height / 2f));
                 checkpoints.Add(ID, checkpoint);
                 AddEntity(checkpoint);
+            }
+
+            var platformLayer = map.ObjectGroups["platforms"];
+            foreach (TmxObject o in platformLayer.Objects)
+            {
+                var speed = float.Parse(o.Properties["speed"]);
+                var pointStr = o.Properties["point"].Split(",");
+                var xMove = float.Parse(pointStr.First().Trim());
+                var yMove = float.Parse(pointStr.Last().Trim());
+                var pos = new Vector2(o.X + (o.Width / 2f), o.Y - (o.Height / 2f));
+                var plat = new Obstacles.Platform(o.Width, o.Height, new Vector2(xMove + pos.X, yMove + pos.Y), speed);
+                plat.Position = pos;
+                AddEntity(plat);
             }
         }
 

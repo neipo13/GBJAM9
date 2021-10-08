@@ -91,12 +91,18 @@ namespace Nez.Tweens
 
 		protected override void UpdateValue()
 		{
+			var currentValue = _target.GetTweenedValue();
 			// special case for non-relative angle lerps so that they take the shortest possible rotation
 			if ((_targetType == TransformTargetType.RotationDegrees ||
 			     _targetType == TransformTargetType.LocalRotationDegrees) && !_isRelative)
 				SetTweenedValue(Lerps.EaseAngle(_easeType, _fromValue, _toValue, _elapsedTime, _duration));
 			else
 				SetTweenedValue(Lerps.Ease(_easeType, _fromValue, _toValue, _elapsedTime, _duration));
+			if(_tickHandler != null)
+			{
+				var postValue = _target.GetTweenedValue();
+				_tickHandler.Invoke(postValue - currentValue);
+			}
 		}
 
 

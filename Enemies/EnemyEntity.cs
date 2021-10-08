@@ -29,6 +29,7 @@ namespace GBJAM9.Enemies
 
             this.animator = animator;
             animator.Enabled = false;
+            //animator.Material = whiteFlashMaterial;
             AddComponent(this.animator);
 
             hurtBox = new BoxCollider(16, 16);

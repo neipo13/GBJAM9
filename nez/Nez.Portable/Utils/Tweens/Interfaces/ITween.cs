@@ -108,5 +108,12 @@ namespace Nez.Tweens
 		/// <returns>The next tween.</returns>
 		/// <param name="nextTween">Next tween.</param>
 		ITween<T> SetNextTween(ITweenable nextTween);
+
+		/// <summary>
+		/// a function that is invoked with the change to T where applicable
+		/// </summary>
+		/// <param name="action"></param>
+		/// <returns>the current tween</returns>
+		ITween<T> SetUpdateAction(Action<T> action);
 	}
 }

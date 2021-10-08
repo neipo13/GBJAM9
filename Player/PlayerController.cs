@@ -62,6 +62,8 @@ namespace GBJAM9.Player
         public override void OnAddedToEntity()
         {
             base.OnAddedToEntity();
+            UpdateOrder = 9999;
+
             animator = Entity.GetComponent<SpriteAnimator>();
             var colliders = Entity.GetComponents<BoxCollider>();
             hurtCollider = colliders.SingleOrDefault(c => c.PhysicsLayer == Data.PhysicsLayers.player_hit);
@@ -159,6 +161,7 @@ namespace GBJAM9.Player
         }
         void Normal_Tick()
         {
+            ChooseNormalAnimation();
             Move();
             if (input.XInput < 0f)
             {
@@ -207,9 +210,7 @@ namespace GBJAM9.Player
             velocity.Y += gravity * Time.DeltaTime;
 
             var movement = velocity * Time.DeltaTime;
-            mover.CalculateMovement(ref movement, out collisionResult);
-            subPixelVector2.Update(ref movement);
-            mover.ApplyMovement(movement);
+            Move(movement);
 
             //don't let gravity build while you're grounded
             if (isGrounded && velocity.Y > 0f) velocity.Y = 0f;
@@ -219,6 +220,22 @@ namespace GBJAM9.Player
                 offGroundInputBufferTimer--;
             if (justJumpedBufferTimer > 0)
                 justJumpedBufferTimer--;
+        }
+
+        public void Move(Vector2 movement)
+        {
+            mover.Move(movement, out collisionResult);
+
+            //mover.CalculateMovement(ref movement, out collisionResult);
+            //subPixelVector2.Update(ref movement);
+            //mover.ApplyMovement(movement);
+        }
+
+        public void Move(Vector2 movement, ref CollisionResult result)
+        {
+            mover.CalculateMovement(ref movement, out result);
+            subPixelVector2.Update(ref movement);
+            mover.ApplyMovement(movement);
         }
 
         void Jump()

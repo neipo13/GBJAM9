@@ -75,6 +75,7 @@ namespace Nez
 		/// used by Renderers to specify how this sprite should be rendered
 		/// </summary>
 		public virtual Material Material { get; set; }
+		public bool MaterialEnabled = true;
 
 		/// <summary>
 		/// offset from the parent entity. Useful for adding multiple Renderables to an Entity that need specific positioning.
